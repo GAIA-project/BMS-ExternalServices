@@ -1,16 +1,8 @@
 (function () {
     'use strict';
 
-<<<<<<< HEAD
-angular.module('app').run(function($rootScope, $templateCache) {
- 
-    
-=======
-angular.module('app').run(function($rootScope, $templateCache,$translate,$log) {
- /*  $rootScope.$on('$viewContentLoaded', function() {
-      // $templateCache.removeAll();
-   });
-*/
+
+angular.module('app').run(function($rootScope, $templateCache,$translate,$log,$stateParams) {
 
 
         $rootScope.getL = function(){
@@ -84,7 +76,7 @@ angular.module('app').run(function($rootScope, $templateCache,$translate,$log) {
         }
 
 
->>>>>>> 1f33542a8bb7acd77005ad0554190fe862995ca8
+
         $rootScope.isUndefined = function(val){
 
             if(angular.isUndefined(val) || val === null || val==null || val=="null" || val === " " || val === "")
@@ -148,6 +140,10 @@ angular.module('app').run(function($rootScope, $templateCache,$translate,$log) {
                 }
                 return w;
             });
+        }
+
+        $rootScope.getToken = function(){
+            return $stateParams.token;
         }
 
                
@@ -263,7 +259,7 @@ angular.module('app').run(function($rootScope, $templateCache,$translate,$log) {
           
 
             $stateProvider.state('chart', {
-                url: '/page/chart/:id/:token',
+                url: '/page/chart/:id/:token/:step/:from/:to',
                 templateUrl: 'app/page/chart.html'
             });
 

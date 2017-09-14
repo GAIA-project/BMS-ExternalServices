@@ -84,12 +84,6 @@
                 <section data-ui-view class="{{main.pageTransition.class}}"  style="min-height: 100%;padding-bottom: 0;height: 100%;"></section>
             
         </div>
-
-
-<<<<<<< HEAD
-=======
-        
->>>>>>> 1f33542a8bb7acd77005ad0554190fe862995ca8
         
         <!-- build:js scripts/vendor.js -->
         <script src="bower_components/jquery/dist/jquery.min.js?v=<?php echo $version; ?>"></script>

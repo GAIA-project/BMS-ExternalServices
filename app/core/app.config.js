@@ -15,7 +15,6 @@
     function appConfig($location,$stateParams) {
         
 
-                
         var pageTransitionOpts = [
             {
                 name: 'Fade up',
@@ -33,7 +32,11 @@
         ];
         var date = new Date();
         var year = date.getFullYear();
+
         var main = {
+            getToken:function(){
+                return this.auth_token;
+            },
             selected_building:0,
             logo:'images/logo.png',
             brand: 'Gaia',
@@ -73,15 +76,10 @@
                 
             },
             buildings:[],
-<<<<<<< HEAD
-            auth_token:$stateParams.token,
+            auth_token:'',
             auth_role : ''
-=======
-            auth_token:'d3625c13-017c-41fd-8b65-a26ef22c4a66',
-            auth_role : 'ROLE_GAIA_GLOBAL_MANAGER'
->>>>>>> 1f33542a8bb7acd77005ad0554190fe862995ca8
-
         };
+        main.auth_token = $stateParams.token;
         
 
 

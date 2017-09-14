@@ -1,4 +1,4 @@
-angular.module('app').factory('site', function($http,appConfig){
+angular.module('app').factory('site', function($http,appConfig,$rootScope){
     
         return{
             getSparkDetails:function(site_id){
@@ -48,10 +48,13 @@ angular.module('app').factory('site', function($http,appConfig){
                 })
             },
             getDetails : function(site_id) {
+                console.log("TOKEN");
+                console.log($rootScope.getToken());
+                console.log($rootScope.getToken());
                 return $http({
                     url: appConfig.main.apis.over_new_api+site_id+"/siteInfo",
                     method: 'GET',
-                    headers: {"Accept": "application/json","Authorization":"bearer "+appConfig.main.auth_token}
+                    headers: {"Accept": "application/json","Authorization":"bearer "+$rootScope.getToken()}
                 })
             },
             syncCNIT:function(site_id){
