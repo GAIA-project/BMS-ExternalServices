@@ -8,30 +8,67 @@
            $scope.selected_from = $stateParams.from;
            $scope.selected_to = $stateParams.to;
 
+        $scope.getbOptions = function(){
+            
+            var boptions = new Array;
+            boptions.push({
+                "class":'btn btn-secondary',
+                "action":'5mins',
+                "translate":'per_5mins'
+            });
+            boptions.push({
+                "class":'btn btn-secondary',
+                "action":'hour',
+                "translate":'per_hour'
+            });
+            boptions.push({
+                "class":'btn btn-secondary',
+                "action":'day',
+                "translate":'per_day'
+            });
+            boptions.push({
+                "class":'btn btn-secondary',
+                "action":'month',
+                "translate":'per_month'
+            });    
+            console.log(boptions);
+            return boptions;
+        }
         
+
         var t_site = $http({
                     url: 'http://150.140.5.64:8080/gaia-building-knowledge-base/sites/'+$stateParams.id+'/siteInfo',
                     method: 'GET',
                     headers: {"Content-Type": "application/hal+json","Authorization":$rootScope.getToken()}
         });
-        t_site.then(function(site){
-            console.log(site);
-           $scope.building = {};    
-           $scope.building.details = site.data;
-           $scope.sitename = site.data.englishLocalizedName;
-           var json = JSON.parse(site.data.json);           
-            
-            $scope.energy_consumption_resource = json.temperature_resource;
-            $scope.measurementUnit = json.energy_consumption_resource_uom;
-            
+        t_site.then(function(info){
                 
-            $scope.energy_chart = {};
-            $scope.energy_chart.resource_id = json.energy_consumption_resource;
-            
-            
-            $scope.energy_chart.step = $scope.selected_step;
-            $scope.energy_chart.name = '';
-            $scope.getCentralChart();
+                $scope.loading = 0;
+                console.log("Info");
+                console.log(info);
+                $scope.info = info.data;
+
+                $scope.building = info.data;
+                $scope.building.details = info.data;
+                $scope.sitename = info.data.greekLocalizedName;
+                var json = JSON.parse(info.data.json);
+
+                $scope.building.json = JSON.parse(info.data.json);
+                $scope.jjson = $scope.building.json;
+                if($rootScope.isUndefined($scope.jjson.extra_charts)){
+                    $scope.jjson.extra_charts = [];
+                }
+
+                $scope.energy_chart = {};
+                $scope.energy_chart.resource_id = json.energy_consumption_resource;
+                $scope.energy_chart.boptions = $scope.getbOptions();
+                $scope.energy_chart.uom = json.energy_consumption_resource_uom;
+                $scope.energy_chart.measurementUnit = json.energy_consumption_resource_uom;
+                $scope.energy_chart.step = json.energy_consumption_resource_step;
+                $scope.energy_chart.name = '';
+
+           
+                $scope.getCentralChart();
 
         }, function(reason) {
           console.log(reason);
@@ -46,11 +83,19 @@
             $scope.obj.one = {};
             $scope.obj.one.from = $rootScope.convertToMiliseconds($scope.selected_from);
             $scope.obj.one.to = $rootScope.convertToMiliseconds($scope.selected_to)+((1000*60*60*24)-2000);
-            $scope.obj.one.resourceID= $scope.energy_consumption_resource;
+            $scope.obj.one.resourceID= $scope.energy_chart.resource_id;
+            $scope.obj.one.targetUom = $scope.energy_chart.measurementUnit;
             $scope.obj.one.granularity = $scope.selected_step;
 
-          
-            var first = Sensor.getComparingQueryTimeRange($scope.obj.one);
+            console.log($scope.obj.one);
+            var first = $http({
+                        url:appConfig.main.apis.main+'resource/query/timerange',
+                        method:'POST',
+                        data:{
+                            "queries": [$scope.obj.one]
+                        },
+                        headers: {"Accept": "application/json","Authorization":"bearer "+$rootScope.getToken()},
+                    });
               first.then(function(vals){
                 var obj     = vals.data.results;
                 var vals1   = obj[Object.keys(obj)[0]];
@@ -83,7 +128,7 @@
                     },
                     tooltip : {
                         trigger: 'axis',
-                        formatter: "{b} <br/> {c}"+$scope.measurementUnit
+                        formatter: "{b} <br/> {c}"+$scope.energy_chart.measurementUnit
                     },
                     legend: {
                         data:['Mesurements']
@@ -115,7 +160,7 @@
                         {
                             type : 'value',
                             axisLabel : {
-                                formatter: '{value} '+$scope.measurementUnit
+                                formatter: '{value} '+$scope.energy_chart.measurementUnit
                             }
                         }
                     ],

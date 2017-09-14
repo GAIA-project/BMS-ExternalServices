@@ -106,10 +106,7 @@ angular.module('app').run(function($rootScope, $templateCache,$translate,$log,$s
         $rootScope.convertForTimeAxis = function(timest,granularity){
             
             var m = timest;
-            console.log(timest);
-
-            console.log(m.getDate()+"/"+parseInt(m.getMonth()+1)+"/"+m.getUTCFullYear());
-
+            
             switch(granularity) {
                 case '5min':
                     return m.getHours()+":"+m.getMinutes()+":00";
